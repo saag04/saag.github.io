@@ -1,5 +1,6 @@
 
 using DocuSignPOC2;
+using DocuSignPOC2.Services;
 using DocuSignPOC2.Services.IDocuSignEnvelope;
 using DocuSignPOC2.Services.IESignAdmin;
 using DocuSignPOC2.Services.IUser;
@@ -18,11 +19,12 @@ finally
 }
 
 var builder = WebApplication.CreateBuilder(args);
-
+var _config = builder.Configuration;
 // Add services to the container.
 // Add services to the container.
+var elephantDbConnectionString = DataBaseFunctions.GetElephnatDBConnectionString(_config.GetRequiredSection("ELEPHANTSQL_URL").Get<string>());
 builder.Services.AddDbContext<DataContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(elephantDbConnectionString));
 
 builder.Host.UseSerilog((context, config) =>
 {
